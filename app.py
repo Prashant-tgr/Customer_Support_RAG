@@ -25,18 +25,26 @@ app = FastAPI(title="GigaCorp Customer Support Assistant")
 # ----------------------------
 # Load Chroma Vector Database
 # ----------------------------
-embedding = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+embedding = None
+vector_db = None
+retriever = None
 
-vector_db = Chroma(
-    persist_directory="./chroma_db",
-    embedding_function=embedding
-)
+def get_retriever():
+    global embedding, vector_db, retriever
 
-retriever = vector_db.as_retriever(
-    search_kwargs={"k": 4}
-)
+    if retriever is None:
+        embedding = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
+
+        vector_db = Chroma(
+            persist_directory="./chroma_db",
+            embedding_function=embedding,
+        )
+
+        retriever = vector_db.as_retriever(search_kwargs={"k": 4})
+
+    return retriever
 
 def normalize_provider(provider: Optional[str]) -> str:
     if provider is None:
@@ -120,7 +128,7 @@ async def chat_endpoint(request: ChatRequest):
     provider = "groq"
     api_key = os.getenv("GROQ_API_KEY")
 
-    relevant_docs = retriever.invoke(request.message)
+    relevant_docs = get_retriever().invoke(request.message)
     sources = []
     for doc in relevant_docs:
         sources.append({
