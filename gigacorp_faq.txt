@@ -1,0 +1,83 @@
+=== GigaCorp Shipping Policies ===
+Line 1: GigaCorp offers standard, expedited, and international shipping options.
+Line 2: Standard domestic shipping takes 3-5 business days and is free for orders over $50.
+Line 3: Expedited domestic shipping takes 1-2 business days at a flat rate of $15.
+Line 4: International shipping is available to select countries, including India, Canada, the United Kingdom, Australia, Germany, and Singapore.
+Line 5: Shipping to India costs a flat fee of $35 USD and usually takes 7-10 business days.
+Line 6: Shipping to Canada costs $25 USD and takes approximately 5-8 business days.
+Line 7: Orders placed before 5:00 PM EST are processed on the same business day.
+Line 8: Orders placed after 5:00 PM EST are processed on the next business day.
+Line 9: Customers receive a shipping confirmation email with tracking information once the order has shipped.
+Line 10: Shipping delays may occur during holidays, severe weather, or customs inspections.
+Line 11: Customs duties and import taxes are the responsibility of the recipient.
+Line 12: Shipping fees are refundable only if GigaCorp ships the wrong product or a damaged item.
+
+=== GigaCorp Return Processes ===
+Line 13: Customers can return most products within 30 days of purchase for a refund or exchange.
+Line 14: To initiate a return, sign in to your GigaCorp account, open My Orders, and select Request Return.
+Line 15: A prepaid return shipping label will be generated for eligible domestic returns.
+Line 16: Products must be unused and returned in their original packaging.
+Line 17: Electronics must include all original accessories and manuals.
+Line 18: Personalized or customized products cannot be returned unless they arrive damaged or defective.
+Line 19: Gift cards and digital downloads are non-refundable.
+Line 20: Refunds are processed within 5-7 business days after the returned item is inspected.
+Line 21: Refunds are credited to the original payment method used during purchase.
+Line 22: Exchanges depend on product availability at the time the return is processed.
+
+=== GigaCorp Business Hours ===
+Line 23: GigaCorp customer support is available Monday through Friday from 8:00 AM to 8:00 PM Eastern Standard Time (EST).
+Line 24: Live chat support is available during normal business hours.
+Line 25: Email requests submitted outside business hours are answered on the next business day.
+Line 26: Technical support is available 24 hours a day, 7 days a week for Enterprise customers.
+Line 27: Our offices are closed on major United States public holidays including New Year's Day, Independence Day, Thanksgiving, and Christmas Day.
+Line 28: Average email response time for Basic customers is 24-48 hours.
+Line 29: Average response time for Pro customers is under 4 hours.
+
+=== GigaCorp Service Tiers ===
+Line 30: GigaCorp provides three subscription plans: Basic, Pro, and Enterprise.
+Line 31: Basic is free and includes access to standard platform features and email support.
+Line 32: Pro costs $29 per month and includes advanced features, priority email support, and live chat support.
+Line 33: Enterprise pricing is customized according to business requirements.
+Line 34: Enterprise customers receive a dedicated account manager.
+Line 35: Enterprise customers receive 24/7 phone support.
+Line 36: Enterprise customers can request custom software integrations.
+Line 37: Pro customers receive early access to selected beta features.
+Line 38: Basic customers do not receive phone support.
+
+=== GigaCorp Billing & Payments ===
+Line 39: GigaCorp accepts Visa, Mastercard, American Express, Discover, and PayPal.
+Line 40: Subscription plans renew automatically every month unless cancelled.
+Line 41: Annual subscriptions receive a 10 percent discount compared to monthly billing.
+Line 42: Customers may cancel subscriptions at any time from the Billing section of their account.
+Line 43: Failed payments are retried automatically for up to seven days.
+Line 44: Invoices can be downloaded as PDF files from the Billing History page.
+Line 45: Taxes are calculated according to the customer's billing country.
+
+=== GigaCorp Account Management ===
+Line 46: Customers can reset their password using the Forgot Password option on the login page.
+Line 47: Two-factor authentication is available and recommended for all accounts.
+Line 48: Email addresses can be updated from the Account Settings page.
+Line 49: Users may delete their account by contacting customer support.
+Line 50: Deleted accounts are permanently removed after 30 days.
+Line 51: Inactive accounts may be archived after 24 months of inactivity.
+
+=== GigaCorp Privacy & Security ===
+Line 52: Customer information is encrypted while stored and during transmission.
+Line 53: GigaCorp never sells customer personal information to third parties.
+Line 54: Customers can request a copy of their personal data.
+Line 55: Privacy requests are processed within 30 days.
+Line 56: Security incidents are investigated immediately by the GigaCorp security team.
+Line 57: Enterprise customers may request a security compliance report.
+
+=== GigaCorp Warranty ===
+Line 58: Physical hardware products include a one-year limited warranty.
+Line 59: Warranty claims require proof of purchase.
+Line 60: Accidental damage and misuse are not covered by the warranty.
+Line 61: Replacement products are shipped after warranty approval.
+Line 62: Warranty replacements are shipped using standard shipping at no additional cost.
+
+=== Information Not Available ===
+Line 63: The knowledge base does not contain information about GigaCorp executives or company ownership.
+Line 64: The knowledge base does not include future product release dates.
+Line 65: The knowledge base does not contain internal employee contact information.
+Line 66: If a customer asks about information outside this FAQ, the assistant should state that the information is unavailable in the GigaCorp knowledge base. 

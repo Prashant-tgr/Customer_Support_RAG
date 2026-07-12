@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigaCorp Customer Support Assistant</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Main Sidebar / Chat Interface -->
+        <main class="chat-section">
+            <header class="chat-header">
+                <div class="brand">
+                    <div class="logo">
+                        <i data-lucide="bot" class="logo-icon"></i>
+                    </div>
+                    <div>
+                        <h1>GigaCorp Support</h1>
+                        <span class="status-indicator">
+                            <span class="status-dot"></span>
+                            AI Assistant Online
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="chat-messages">
+                <div class="message assistant-message">
+                    <div class="avatar">
+                        <i data-lucide="bot"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <p>Hello! I am your GigaCorp Customer Support Assistant. How can I help you today? You can ask me about our shipping policies, returns, business hours, or service tiers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Start Suggestions -->
+            <div class="quick-starts">
+                <button class="quick-start-chip" data-prompt="Do you ship to India?">
+                    <i data-lucide="plane"></i> Shipping to India?
+                </button>
+                <button class="quick-start-chip" data-prompt="What are GigaCorp's service tiers?">
+                    <i data-lucide="layers"></i> Service Tiers
+                </button>
+                <button class="quick-start-chip" data-prompt="How do I return an item?">
+                    <i data-lucide="rotate-ccw"></i> Return Process
+                </button>
+                <button class="quick-start-chip" data-prompt="What are the support hours?">
+                    <i data-lucide="clock"></i> Business Hours
+                </button>
+            </div>
+
+            <!-- Chat Input Bar -->
+            <footer class="chat-input-container">
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="user-input" placeholder="Ask GigaCorp support..." autocomplete="off">
+                    <button type="submit" id="send-btn" class="send-button">
+                        <i data-lucide="send"></i>
+                    </button>
+                </form>
+            </footer>
+        </main>
+
+        <!-- Knowledge Base Viewer Panel (Right side) -->
+        <aside class="faq-section">
+            <header class="faq-header">
+                <i data-lucide="database" class="header-icon"></i>
+                <h2>GigaCorp FAQ Reference</h2>
+            </header>
+            <div class="faq-subheader">
+                <p>Click on any citation in the chat history to scroll to and highlight its source line in real time.</p>
+            </div>
+            <div id="faq-viewer" class="faq-viewer">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading FAQ database...</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Notification system -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+        // State variables
+        let chatHistory = [];
+        let faqLines = [];
+
+        // Elements
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const faqViewer = document.getElementById('faq-viewer');
+        const quickStartChips = document.querySelectorAll('.quick-start-chip');
+        const toast = document.getElementById('toast');
+
+        // Initialize icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchFAQ();
+        });
+
+        // Show Toast Notification
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => {
+                toast.className = 'toast hidden';
+            }, 3000);
+        }
+
+        // Fetch FAQ from FastAPI backend
+        async function fetchFAQ() {
+            try {
+                const response = await fetch('/api/faq');
+                const data = await response.json();
+                if (data.error) {
+                    faqViewer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>${data.error}</p></div>`;
+                    lucide.createIcons();
+                    return;
+                }
+                
+                parseFAQ(data.content);
+            } catch (err) {
+                console.error("Error loading FAQ:", err);
+                faqViewer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>Failed to connect to backend server.</p></div>`;
+                lucide.createIcons();
+            }
+        }
+
+        // Parse and render FAQ in the right panel
+        function parseFAQ(content) {
+            faqLines = content.split('\n');
+            faqViewer.innerHTML = '';
+            
+            let container = document.createElement('div');
+            container.className = 'faq-lines-container';
+            
+            faqLines.forEach((line, idx) => {
+                const lineNum = idx + 1;
+                const trimmed = line.trim();
+                
+                let lineEl = document.createElement('div');
+                lineEl.className = 'faq-line';
+                lineEl.id = `faq-line-${lineNum}`;
+                
+                // Style headers differently
+                if (trimmed.startsWith('===') && trimmed.endswith('===')) {
+                    lineEl.className += ' faq-section-header';
+                }
+                
+                let numEl = document.createElement('span');
+                numEl.className = 'faq-line-num';
+                numEl.textContent = lineNum;
+                
+                let contentEl = document.createElement('span');
+                contentEl.className = 'faq-line-content';
+                contentEl.textContent = line;
+                
+                lineEl.appendChild(numEl);
+                lineEl.appendChild(contentEl);
+                container.appendChild(lineEl);
+            });
+            
+            faqViewer.appendChild(container);
+            lucide.createIcons();
+        }
+
+        // Helper to check standard endswith since custom script environment might differ
+        String.prototype.endswith = function(suffix) {
+            return this.indexOf(suffix, this.length - suffix.length) !== -1;
+        };
+
+        // Scroll to and highlight a specific line in FAQ panel
+        function highlightFAQLine(lineNum) {
+            const lineEl = document.getElementById(`faq-line-${lineNum}`);
+            if (lineEl) {
+                // Clear previous highlights
+                document.querySelectorAll('.faq-line').forEach(el => {
+                    el.classList.remove('highlighted');
+                });
+                
+                // Add highlight class
+                lineEl.classList.add('highlighted');
+                
+                // Scroll container to element
+                lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Append message to chat screen
+        function appendMessage(role, text, sources = []) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${role}-message`;
+            
+            const avatarEl = document.createElement('div');
+            avatarEl.className = 'avatar';
+            avatarEl.innerHTML = role === 'user' ? '<i data-lucide="user"></i>' : '<i data-lucide="bot"></i>';
+            
+            const bubbleEl = document.createElement('div');
+            bubbleEl.className = 'message-bubble';
+            
+            // Format LLM text citations into interactive links
+            let formattedText = escapeHTML(text);
+            
+            // Regex to find citation patterns like: (Shipping Policies, Line 4) or (Return Processes, Line 8)
+            // Replace with clickable HTML links
+            formattedText = formattedText.replace(/\(([^)]+),\s*Line\s*(\d+)\)/gi, (match, section, line) => {
+                return `<span class="citation-link" onclick="highlightFAQLine(${line})"><i data-lucide="link" class="inline-icon"></i>(${section}, Line ${line})</span>`;
+            });
+            
+            const textEl = document.createElement('div');
+            textEl.className = 'message-text';
+            textEl.innerHTML = formattedText;
+            bubbleEl.appendChild(textEl);
+            
+            // If sources were returned separately, append them as references
+            if (sources && sources.length > 0) {
+                const sourcesContainer = document.createElement('div');
+                sourcesContainer.className = 'message-sources';
+                
+                const labelEl = document.createElement('span');
+                labelEl.className = 'sources-label';
+                labelEl.textContent = 'Retrieved References:';
+                sourcesContainer.appendChild(labelEl);
+                
+                const listEl = document.createElement('div');
+                listEl.className = 'sources-list';
+                
+                // Deduplicate sources by line number to avoid duplicates
+                const uniqueSources = [];
+                const seenLines = new Set();
+                sources.forEach(src => {
+                    if (src.line_number && !seenLines.has(src.line_number)) {
+                        seenLines.add(src.line_number);
+                        uniqueSources.push(src);
+                    }
+                });
+                
+                uniqueSources.forEach(src => {
+                    const chip = document.createElement('button');
+                    chip.className = 'source-chip';
+                    chip.title = `Click to view source content: "${src.content}"`;
+                    chip.innerHTML = `<i data-lucide="file-text"></i> ${src.section} (L${src.line_number})`;
+                    chip.onclick = () => highlightFAQLine(src.line_number);
+                    listEl.appendChild(chip);
+                });
+                
+                sourcesContainer.appendChild(listEl);
+                bubbleEl.appendChild(sourcesContainer);
+            }
+            
+            messageEl.appendChild(avatarEl);
+            messageEl.appendChild(bubbleEl);
+            chatMessages.appendChild(messageEl);
+            
+            // Scroll chat to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            lucide.createIcons();
+        }
+
+        // HTML escaping
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingEl = document.createElement('div');
+            typingEl.id = 'typing-indicator';
+            typingEl.className = 'message assistant-message typing-indicator-msg';
+            
+            typingEl.innerHTML = `
+                <div class="avatar">
+                    <i data-lucide="bot"></i>
+                </div>
+                <div class="message-bubble typing-bubble">
+                    <div class="dot-flashing"></div>
+                    <div class="dot-flashing"></div>
+                    <div class="dot-flashing"></div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            lucide.createIcons();
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingEl = document.getElementById('typing-indicator');
+            if (typingEl) {
+                typingEl.remove();
+            }
+        }
+
+        // Handle form submit
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            userInput.value = '';
+            appendMessage('user', message);
+            
+            // Add to client-side memory (before sending)
+            const currentHistory = [...chatHistory];
+            chatHistory.push({ role: 'user', content: message });
+            
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: currentHistory
+                    })
+                });
+                
+                removeTypingIndicator();
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    const errMsg = data.detail || "An error occurred with the request.";
+                    appendMessage('assistant', `⚠️ Error: ${errMsg}`);
+                    showToast(errMsg, "error");
+                    // Pop user message from history on failure
+                    chatHistory.pop();
+                    return;
+                }
+                
+                appendMessage('assistant', data.answer, data.sources);
+                chatHistory.push({ role: 'assistant', content: data.answer });
+                
+            } catch (err) {
+                console.error("Chat error:", err);
+                removeTypingIndicator();
+                appendMessage('assistant', "⚠️ Error: Failed to communicate with the server. Make sure the FastAPI backend is running.");
+                showToast("Connection failed", "error");
+                chatHistory.pop();
+            }
+        });
+
+        // Handle quick start prompt clicks
+        quickStartChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const prompt = chip.getAttribute('data-prompt');
+                userInput.value = prompt;
+                chatForm.dispatchEvent(new Event('submit'));
+            });
+        });
+    </script>
+</body>
+</html>
