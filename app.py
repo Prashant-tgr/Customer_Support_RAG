@@ -15,6 +15,10 @@ from langchain_core.documents import Document
 # Load environment variables from .env
 load_dotenv()
 
+
+print(os.getcwd())
+print(os.listdir("."))
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("rag-app")
@@ -33,26 +37,26 @@ def get_retriever():
     global embedding, vector_db, retriever
 
     if retriever is None:
+        print("Loading HuggingFace model...")
+
         embedding = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
+
+        print("Loading Chroma DB...")
 
         vector_db = Chroma(
             persist_directory="./chroma_db",
             embedding_function=embedding,
         )
 
-        retriever = vector_db.as_retriever(search_kwargs={"k": 4})
+        retriever = vector_db.as_retriever(
+            search_kwargs={"k": 4}
+        )
+
+        print("Retriever ready.")
 
     return retriever
-
-def normalize_provider(provider: Optional[str]) -> str:
-    if provider is None:
-        return "groq"
-    provider = provider.strip().lower()
-    if provider not in {"groq", "openai"}:
-        return "groq"
-    return provider
 
 
 
@@ -128,16 +132,18 @@ async def chat_endpoint(request: ChatRequest):
     provider = "groq"
     api_key = os.getenv("GROQ_API_KEY")
 
-    relevant_docs = get_retriever().invoke(request.message)
-    sources = []
-    for doc in relevant_docs:
-        sources.append({
-            "content": doc.page_content,
-            "line_number": doc.metadata.get("line_number"),
-            "section": doc.metadata.get("section")
-        })
-
     try:
+    
+        relevant_docs = get_retriever().invoke(request.message)
+        sources = []
+        for doc in relevant_docs:
+            sources.append({
+                "content": doc.page_content,
+                "line_number": doc.metadata.get("line_number"),
+                "section": doc.metadata.get("section")
+            })
+
+    
         if not api_key:
             raise RuntimeError("No API key provided")
         
